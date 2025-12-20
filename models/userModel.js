@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     index: true,
   },
   name: String,
-  photo: String,
+  profile: String,
 
   likeposts: [{
       type: mongoose.Schema.Types.ObjectId,
