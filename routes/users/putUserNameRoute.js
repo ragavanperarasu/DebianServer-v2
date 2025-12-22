@@ -32,7 +32,6 @@ router.put("/:id/name", async (req, res) => {
 
     res.json({
       status: "success",
-      user
     });
 
   } catch (err) {
