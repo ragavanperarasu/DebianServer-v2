@@ -45,6 +45,8 @@ app.use('/app/users', require('./routes/users/getUserRoute'));
 app.use('/app/users', require('./routes/users/putUserNameRoute'));
 app.use('/app/users', require('./routes/users/putUserProfileRoute'));
 
+app.use('/app/posts', require('./routes/post/postNewSemqusRoute'));
+
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
