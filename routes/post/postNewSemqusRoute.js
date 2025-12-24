@@ -4,26 +4,24 @@ const semqusModel = require("../../models/semqusModel");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const pdf = require("pdf-poppler");
+const { fromPath } = require("pdf2pic");
 
-/* =======================
-   Ensure folders exist
-======================= */
 const pdfDir = "uploads/semqus";
 const thumbDir = "uploads/semqus/thumbs";
 
 if (!fs.existsSync(pdfDir)) fs.mkdirSync(pdfDir, { recursive: true });
 if (!fs.existsSync(thumbDir)) fs.mkdirSync(thumbDir, { recursive: true });
 
-/* =======================
-   Multer config
-======================= */
+/* 
+curl -X POST http://localhost:5000/app/posts/semqus/newpost   -F "subuid=SUB123"   -F "useruid=USER123"   -F "postdes=Semester Question Paper"   -F "pdf=@/home/ragavan/Documents/sample.pdf"
+*/
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, pdfDir);
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname); // .pdf
+    const ext = path.extname(file.originalname);
     cb(null, `${Date.now()}_semqus${ext}`);
   }
 });
@@ -32,19 +30,16 @@ const fileFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {
     cb(null, true);
   } else {
-    cb(new Error("Only PDF allowed"), false);
+    cb(new Error("Only PDF files allowed"), false);
   }
 };
 
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
+  limits: { fileSize: 200 * 1024 * 1024 } 
 });
 
-/* =======================
-   Route
-======================= */
 router.post("/semqus/newpost", upload.single("pdf"), async (req, res) => {
   try {
     const { subuid, useruid, postdes } = req.body;
@@ -56,24 +51,27 @@ router.post("/semqus/newpost", upload.single("pdf"), async (req, res) => {
       });
     }
 
-    /* =======================
-       Generate thumbnail
-    ======================= */
+    //   Generate PDF thumbnail
+
     const pdfPath = req.file.path;
-    const thumbName = `${path.parse(req.file.filename).name}.png`;
+    const baseName = path.parse(req.file.filename).name;
 
-    const options = {
+    const converter = fromPath(pdfPath, {
+      density: 150,
+      saveFilename: baseName,
+      savePath: thumbDir,
       format: "png",
-      out_dir: thumbDir,
-      out_prefix: path.parse(req.file.filename).name,
-      page: 1 // FIRST PAGE ONLY
-    };
+      width: 600,
+      height: 500
+    });
 
-    await pdf.convert(pdfPath, options);
+    // Convert FIRST PAGE ONLY
+    await converter(1);
 
     const pdfurl = `/uploads/semqus/${req.file.filename}`;
-    const pdfimg = `/uploads/semqus/thumbs/${thumbName}`;
+    const pdfimg = `/uploads/semqus/thumbs/${baseName}.1.png`;
 
+    // Save to DB
     // await semqusModel.create({
     //   subuid,
     //   useruid,
