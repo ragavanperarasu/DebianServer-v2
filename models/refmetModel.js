@@ -2,14 +2,17 @@ const mongoose = require("mongoose");
 const postDBConnection = require("../database/postDB");
 
 const refmetSchema = new mongoose.Schema({
-  subuid: {
-    type: mongoose.Schema.Types.ObjectId,
-  },
 
   useruid: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "users"
   },
+
+  dept: [
+    {
+      dname: String,
+    },
+  ],
 
   pdfurl: String,
   pdfimg: String,
@@ -25,6 +28,10 @@ const refmetSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+refmetSchema.index({
+  "dept.dname": 1
 });
 
 
