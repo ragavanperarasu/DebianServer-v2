@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const semqusModel = require("../../models/semqusModel");
+const semqusModel = require("../../../models/semqusModel");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
