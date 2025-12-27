@@ -44,6 +44,7 @@ app.use('/app/users', require('./routes/users/newUserRoute'));
 app.use('/app/users', require('./routes/users/getUserRoute'));
 app.use('/app/users', require('./routes/users/putUserNameRoute'));
 app.use('/app/users', require('./routes/users/putUserProfileRoute'));
+app.use('/app/users', require('./routes/users/deleteUserRoute'));
 
 app.use('/app/posts', require('./routes/post/semqus/postNewSemqusRoute'));
 

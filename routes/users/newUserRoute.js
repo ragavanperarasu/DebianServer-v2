@@ -4,8 +4,8 @@ const UsersModel = require("../../models/userModel");
 
 router.post("/login", async (req, res) => {
   try {
-    let { name, profile, email } = req.body;
-    if(!email || !name || !profile){ 
+    let { givenName, photo, email } = req.body;
+    if(!email || !givenName || !photo){ 
         return res.status(400).json({ status: "failed", message: "Missing required fields" });
     }
 
@@ -16,21 +16,23 @@ router.post("/login", async (req, res) => {
       { email }, 
       {
         $setOnInsert: {
-          email,
-          name,
-          profile,
+          email: email,
+          name: givenName,
+          profile: photo,
           role
         }
       },
       {
         new: true,
         upsert: true,
-        select: "email profile name role likeposts"
+        select: "_id"
       }
     );
 
+
     res.json({
       status: "success",
+      useruid: user._id,
     });
 
   } catch (err) {
