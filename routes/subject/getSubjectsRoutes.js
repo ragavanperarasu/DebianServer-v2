@@ -6,19 +6,24 @@ router.get("/sublist/:reg/:dept", async (req, res) => {
   try {
     const { reg, dept } = req.params;
 
-    const subjects = await Subject.find({
-      regulation: reg,
-      "dept.dname": dept,   // match inside array
-    })
-      .populate("useruid", "name email")
-      .sort({ createdAt: -1 });
+    console.log(req.params);
 
+    const subjects = await Subject.find(
+      {
+        regulation: reg,
+        dept: { $in: [dept] },
+      },
+      {
+        subname: 1,
+        _id: 1, 
+      }
+    ).sort({ createdAt: -1 });
+
+    console.log(subjects);
     res.json({
       status: "success",
-      count: subjects.length,
       data: subjects,
     });
-
   } catch (err) {
     res.status(500).json({
       status: "failed",

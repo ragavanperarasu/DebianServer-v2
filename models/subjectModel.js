@@ -11,11 +11,7 @@ const subjectSchema = new mongoose.Schema({
   subname: String,
   regulation: String,
 
-  dept: [
-    {
-      dname: String,
-    },
-  ],
+  dept: [String],
 
   createdAt: {
     type: Date,
