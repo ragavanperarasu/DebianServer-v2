@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Subject = require("../../models/subjectModel");
 
+
 router.post("/new", async (req, res) => {
   try {
     const { useruid, subname, regulation, dept } = req.body;
@@ -30,7 +31,6 @@ router.post("/new", async (req, res) => {
 
     res.status(201).json({
       status: "success",
-      data: subject,
     });
 
   } catch (err) {
@@ -40,3 +40,5 @@ router.post("/new", async (req, res) => {
     });
   }
 });
+
+module.exports = router;
