@@ -44,6 +44,8 @@ router.post("/semqus/newpost", upload.single("pdf"), async (req, res) => {
   try {
     const { subuid, useruid, postdes } = req.body;
 
+    console.log(req.body)
+
     if (!subuid || !useruid || !postdes || !req.file) {
       return res.status(400).json({
         status: "failed",
